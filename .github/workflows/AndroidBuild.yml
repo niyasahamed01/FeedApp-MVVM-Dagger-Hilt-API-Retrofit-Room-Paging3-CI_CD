@@ -18,12 +18,14 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
-
+        
+        
+       
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
       - name: Build with Gradle
         run: ./gradlew build
-
-      - name: Run tests
-        run: ./gradlew test
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
