@@ -1,10 +1,14 @@
 package com.example.videofeed.activity
 
+import android.app.PendingIntent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.example.videofeed.adapter.ViewPagerAdapter
 import com.example.videofeed.databinding.ActivityMainBinding
 import com.example.videofeed.utils.Constants
+import com.example.videofeed.utils.MyWorker
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,6 +22,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setViewPager()
+
+        val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
+        WorkManager.getInstance(this).enqueue(workRequest)
     }
 
     private fun setViewPager() {

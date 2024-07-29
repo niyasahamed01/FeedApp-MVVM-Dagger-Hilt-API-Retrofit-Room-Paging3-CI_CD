@@ -19,7 +19,7 @@ class FeedFragment : Fragment() {
 
     private lateinit var binding: FragmentFeedBinding
 
-    private lateinit var datarecordViewModel: NoteViewModel
+    private lateinit var noteViewModel: NoteViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,12 +32,20 @@ class FeedFragment : Fragment() {
 
     private fun setUp() {
 
-        datarecordViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
+        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
 
-        val adapter = DataRecordAdapter()
+        val adapter = DataRecordAdapter(requireContext())
         binding.recyclerView.adapter = adapter
-        datarecordViewModel.allItems.observe(viewLifecycleOwner, Observer { items ->
-            items?.let { adapter.setItems(it) }
+
+        noteViewModel.allItems.observe(viewLifecycleOwner, Observer { items ->
+            items?.let { adapter.setItems(it)
+
+            if (it.isEmpty()) {
+                binding.noDataTextView.visibility = View.VISIBLE
+            } else {
+                binding.noDataTextView.visibility = View.GONE
+            }}
+
         })
 
         binding.fabAdd.setOnClickListener { _ ->
@@ -45,6 +53,5 @@ class FeedFragment : Fragment() {
             startActivity(intent)
         }
     }
-
 
 }

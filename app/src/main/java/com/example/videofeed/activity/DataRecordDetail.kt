@@ -3,7 +3,6 @@ package com.example.videofeed.activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.videofeed.dao.Note
 import com.example.videofeed.databinding.ActivityDatarecordDetailBinding
@@ -11,141 +10,116 @@ import com.example.videofeed.utils.Constants
 import com.example.videofeed.viewmodel.NoteViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
-
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 @AndroidEntryPoint
 class DataRecordDetail : AppCompatActivity() {
 
-    private lateinit var datarecordViewModel: NoteViewModel
+    lateinit var noteViewModel: NoteViewModel
     private var recordId: Long = 0L
     private var recordIsLive: Boolean = false
     private var isEdit: Boolean = false
-    private lateinit var binding: ActivityDatarecordDetailBinding
+    lateinit var binding: ActivityDatarecordDetailBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityDatarecordDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        getData()
-        setOnClick()
-        getVisibility()
-
+        initializeViewModel()
+        handleIntentData()
+        setupClickListeners()
+        updateVisibility()
     }
 
-    private fun getData() {
-
-        datarecordViewModel = ViewModelProvider(this).get(NoteViewModel::class.java)
-
-        if (intent.hasExtra(Constants.DATA_RECORD_ID)) {
-            recordId = intent.getLongExtra(Constants.DATA_RECORD_ID, 0L)
-            recordIsLive = intent.getBooleanExtra(Constants.DATA_RECORD_ISLIVE, false)
-
-            datarecordViewModel.get(recordId).observe(this, Observer {
-
-                if (it != null) {
-                    binding.datarecordId.text = it.id.toString()
-                    binding.datarecordRecord.setText(it.title)
-                    binding.checkRecord.isChecked = recordIsLive
-                }
-            })
-            isEdit = true
-        }
+    private fun initializeViewModel() {
+        noteViewModel = ViewModelProvider(this)[NoteViewModel::class.java]
     }
 
-    private fun setOnClick() {
+    private fun handleIntentData() {
+        intent?.let {
+            recordId = it.getLongExtra(Constants.DATA_RECORD_ID, 0L)
+            recordIsLive = it.getBooleanExtra(Constants.DATA_RECORD_ISLIVE, false)
 
-        binding.btnSave.setOnClickListener { view ->
-            val id = 0L
-            val record = binding.datarecordRecord.text.toString()
-            val isLive = binding.checkRecord.isChecked
-
-            if (record.isBlank() or record.isEmpty()) {
-                Snackbar.make(view, "Empty data is not allowed", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-            } else {
-                try {
-
-                    val sdf = SimpleDateFormat("dd MMMM,yyyy - HH:mm", Locale.getDefault())
-
-                    // Format the current date
-                    val currentDate: String = sdf.format(Date())
-
-                    val date = Date(System.currentTimeMillis())
-
-                    // Format the date obtained from System.currentTimeMillis()
-                    val simpleDateFormat =
-                        SimpleDateFormat("dd MMMM,yyyy - HH:mm", Locale.getDefault())
-                    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
-                    val formattedDate: String = simpleDateFormat.format(date)
-
-                    // Parse the formatted date to obtain a Date object without crash
-                    val parsedDate: Date = simpleDateFormat.parse(formattedDate)
-
-                    // Use the parsed Date object in the Note object
-                    val item =
-                        Note(id = id, title = record, isLive = isLive, currentDate, parsedDate)
-                    datarecordViewModel.insert(item)
-                    finish()
-
-
-                } catch (e: ParseException) {
-                    e.printStackTrace()
-
+            if (recordId != 0L) {
+                noteViewModel.get(recordId).observe(this) { note ->
+                    note?.let {
+                        binding.dataRecordId.text = it.id.toString()
+                        binding.dataRecordRecord.setText(it.title)
+                        binding.checkRecord.isChecked = it.isLive
+                        isEdit = true
+                    }
                 }
             }
         }
+    }
 
+    private fun setupClickListeners() {
+        binding.btnSave.setOnClickListener { view ->
+            val record = binding.dataRecordRecord.text.toString()
+            if (record.isBlank()) {
+                showSnackbar(view, "Empty data is not allowed")
+            } else {
+                saveNote(record, binding.checkRecord.isChecked)
+            }
+        }
 
         binding.btnUpdate.setOnClickListener { view ->
-
-            val id = binding.datarecordId.text.toString().toLong()
-            val record = binding.datarecordRecord.text.toString()
-            val isLive = binding.checkRecord.isChecked
-
-            if (record.isBlank() or record.isEmpty()) {
-                Snackbar.make(view, "Empty data is not allowed", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            val record = binding.dataRecordRecord.text.toString()
+            if (record.isBlank()) {
+                showSnackbar(view, "Empty data is not allowed")
             } else {
-                try {
-                    val sdf = SimpleDateFormat("dd MMMM,yyyy - HH:mm", Locale.getDefault())
-
-                    // Format the current date
-                    val currentDate: String = sdf.format(Date())
-
-                    val date = Date(System.currentTimeMillis())
-
-                    // Format the date obtained from System.currentTimeMillis()
-                    val simpleDateFormat =
-                        SimpleDateFormat("dd MMMM,yyyy - HH:mm", Locale.getDefault())
-                    simpleDateFormat.timeZone = TimeZone.getTimeZone("UTC")
-                    val formattedDate: String = simpleDateFormat.format(date)
-
-                    // Parse the formatted date to obtain a Date object without crash
-                    val parsedDate: Date = simpleDateFormat.parse(formattedDate)
-
-                    // Use the parsed Date object in the Note object
-                    val item =
-                        Note(id = id, title = record, isLive = isLive, currentDate, parsedDate)
-                    datarecordViewModel.update(item)
-                    finish()
-
-                } catch (e: ParseException) {
-                    e.printStackTrace()
-
-                }
+                updateNote(
+                    id = binding.dataRecordId.text.toString().toLong(),
+                    title = record,
+                    isLive = binding.checkRecord.isChecked
+                )
             }
         }
     }
 
-    private fun getVisibility() {
-        if (isEdit) {
-            binding.btnSave.visibility = View.GONE
-        } else {
-            binding.btnUpdate.visibility = View.GONE
+    private fun showSnackbar(view: View, message: String) {
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG).setAction("Action", null).show()
+    }
+
+    fun saveNote(title: String, isLive: Boolean) {
+        val currentDate = getCurrentFormattedDate()
+        val item = Note(
+            id = 0L,
+            title = title,
+            isLive = isLive,
+            timeStamp = currentDate.time.toString(), // Use timestamp for storage
+            date = currentDate
+        )
+        noteViewModel.insert(item)
+        finish()
+    }
+
+    private fun updateNote(id: Long, title: String, isLive: Boolean) {
+        val currentDate = getCurrentFormattedDate()
+        val item = Note(
+            id = id,
+            title = title,
+            isLive = isLive,
+            timeStamp = currentDate.time.toString(), // Use timestamp for storage
+            date = currentDate
+        )
+        noteViewModel.update(item)
+        finish()
+    }
+
+    fun getCurrentFormattedDate(): Date {
+        val dateFormat = SimpleDateFormat("dd MMMM,yyyy - HH:mm", Locale.getDefault()).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
         }
+        return Date() // Return current date and time
+    }
+
+    private fun updateVisibility() {
+        binding.btnSave.visibility = if (isEdit) View.GONE else View.VISIBLE
+        binding.btnUpdate.visibility = if (isEdit) View.VISIBLE else View.GONE
     }
 }
