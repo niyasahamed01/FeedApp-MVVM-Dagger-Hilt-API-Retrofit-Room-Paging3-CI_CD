@@ -1,8 +1,12 @@
 package com.example.videofeed.activity
 
-import android.app.PendingIntent
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.videofeed.adapter.ViewPagerAdapter
@@ -25,6 +29,12 @@ class MainActivity : AppCompatActivity() {
 
         val workRequest = OneTimeWorkRequest.Builder(MyWorker::class.java).build()
         WorkManager.getInstance(this).enqueue(workRequest)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
+            }
+        }
     }
 
     private fun setViewPager() {
