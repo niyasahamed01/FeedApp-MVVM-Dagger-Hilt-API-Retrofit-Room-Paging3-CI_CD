@@ -24,7 +24,7 @@ android {
         viewBinding true
     }
     lint {
-        baseline = file("lint-baseline.xml")
+//        baseline = file("lint-baseline.xml")
         htmlReport = true
         htmlOutput = file("build/reports/lint/lint-results.html")
         textReport = true
