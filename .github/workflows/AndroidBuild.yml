@@ -25,14 +25,14 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Run Lint
-        run: ./gradlew lint
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
 
-      - name: Upload Lint Report
+      - name: Upload Test Reports
         uses: actions/upload-artifact@v2
         with:
-          name: lint-report
-          path: app/build/reports/lint/lint-results.html
+          name: test-reports
+          path: app/build/reports/tests/testDebugUnitTest/
 
       - name: Upload APK
         uses: actions/upload-artifact@v2
