@@ -25,6 +25,10 @@ android {
     }
     lint {
         baseline = file("lint-baseline.xml")
+        htmlReport = true
+        htmlOutput = file("build/reports/lint/lint-results.html")
+        textReport = true
+        textOutput = file("build/reports/lint/lint-results.txt")
     }
 
     buildTypes {
