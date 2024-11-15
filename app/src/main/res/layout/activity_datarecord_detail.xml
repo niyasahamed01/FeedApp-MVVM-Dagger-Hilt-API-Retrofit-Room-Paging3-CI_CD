@@ -4,33 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#9A938B">
+    android:background="#292929">
+
+    <!-- AppBar with Toolbar -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#444444"
+            android:elevation="4dp"
+            app:navigationIcon="@drawable/arrow_back"
+            app:title="Room Details"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_name"
-        style="@style/Theme.VideoFeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
         android:text="Enter your Room Name"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12sdp"
+        app:layout_constraintBottom_toTopOf="@+id/data_record_record"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/data_record_id"
-        style="@style/Theme.VideoFeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:textSize="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/data_record_record"
         app:layout_constraintStart_toEndOf="@+id/tv_name"
-        app:layout_constraintTop_toTopOf="parent" />
+      />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/data_record_record"
-        style="@style/Theme.VideoFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_15sdp"
@@ -41,21 +63,23 @@
         android:singleLine="true"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/check_record"
-        style="@style/Theme.VideoFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_5sdp"
         android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:buttonTint="@color/white"
         android:checked="false"
         android:clickable="true"
         android:focusable="true"
         android:text="Live"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/data_record_record"
@@ -63,14 +87,14 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSave"
-        style="@style/Theme.VideoFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_20sdp"
-        android:background="@color/purple_700"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="#ffc492"
         android:text="Save"
-        android:textSize="@dimen/_15sdp"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/check_record"
@@ -78,14 +102,14 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnUpdate"
-        style="@style/Theme.VideoFeed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_20sdp"
-        android:textSize="@dimen/_15sdp"
-        android:background="@color/purple_700"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_20sdp"
+        android:background="#ffc492"
         android:text="Update"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_12sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/check_record"

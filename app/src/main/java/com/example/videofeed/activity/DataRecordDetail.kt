@@ -24,7 +24,7 @@ class DataRecordDetail : AppCompatActivity() {
     private var isEdit: Boolean = false
     lateinit var binding: ActivityDatarecordDetailBinding
 
-     override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityDatarecordDetailBinding.inflate(layoutInflater)
@@ -51,6 +51,7 @@ class DataRecordDetail : AppCompatActivity() {
                         binding.dataRecordRecord.setText(it.title)
                         binding.checkRecord.isChecked = it.isLive
                         isEdit = true
+                        updateVisibility()
                     }
                 }
             }
@@ -58,6 +59,11 @@ class DataRecordDetail : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
+
+        binding.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         binding.btnSave.setOnClickListener { view ->
             val record = binding.dataRecordRecord.text.toString()
             if (record.isBlank()) {

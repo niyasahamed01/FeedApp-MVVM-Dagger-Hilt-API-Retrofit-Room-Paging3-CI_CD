@@ -31,8 +31,13 @@ class MainActivity : AppCompatActivity() {
         WorkManager.getInstance(this).enqueue(workRequest)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    101
+                )
             }
         }
     }
@@ -48,6 +53,7 @@ class MainActivity : AppCompatActivity() {
                 0 -> {
                     tab.text = Constants.VIDEO
                 }
+
                 1 -> {
                     tab.text = Constants.FEED
                 }
